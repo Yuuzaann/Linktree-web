@@ -112,13 +112,15 @@ socialsData.forEach(s => {
   socialsContainer.appendChild(a);
 });
 
-// --- Links Section ---
+// --- Links Section (My Portfolio, Saweria, Discord) ---
 const linksData = [
   { href: "https://yuuzaann.github.io/Arya-Portofolio/", icon: "fa-solid fa-briefcase", text: "My Portfolio", style: "bg-white/10 border border-white/10 hover:bg-indigo-500/25" },
-  { href: "https://discord.gg/N469ZNNSzS", icon: "fa-brands fa-discord", text: "Join My Discord", style: "bg-indigo-600 hover:bg-indigo-500 shadow-lg" }
+  { href: "https://saweria.co/Yuuzaann", icon: "fa-solid fa-mug-saucer", text: "Support Me", style: "bg-white/10 border border-white/10 hover:bg-indigo-500/25" },
+  { href: "https://discord.gg/N469ZNNSzS", icon: "fa-brands fa-discord", text: "Join My Discord", style: "bg-indigo-600 hover:bg-indigo-500 shadow-lg text-white" }
 ];
 
 const linksContainer = document.getElementById("linksContainer");
+linksContainer.innerHTML = ""; // Clear dulu kalau ada
 linksData.forEach(l => {
   const a = document.createElement("a");
   a.href = l.href;
