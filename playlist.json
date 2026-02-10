@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Favorite Song 1",
+    "src": "music/favorite.wav"
+  },
+  {
+    "title": "Chill Coding Beat",
+    "src": "music/chill.wav"
+  },
+  {
+    "title": "Epic Coding Vibes",
+    "src": "music/epic.wav"
+  }
+]
