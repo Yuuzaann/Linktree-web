@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Linktree Pro - Yuuzaann</title>
 
-<!-- Tailwind -->
+<!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
 
 <!-- Google Fonts -->
@@ -38,12 +38,8 @@ tailwind.config = {
 
 <style>
 body { background-size: 300% 300%; transition: background 0.5s ease; overflow-x:hidden; }
-.particle {
-  position:absolute;
-  border-radius:50%;
-  background:rgba(255,255,255,0.3);
-  pointer-events:none;
-}
+.particle { position:absolute; border-radius:50%; background:rgba(255,255,255,0.3); pointer-events:none; }
+a, button { transition: all 0.3s ease; }
 </style>
 </head>
 
@@ -54,9 +50,7 @@ bg-gradient-to-br from-indigo-950 via-slate-900 to-black animate-gradient px-4 p
 <div id="particles" class="absolute inset-0 -z-20 overflow-hidden"></div>
 
 <!-- AUDIO -->
-<audio id="bgMusic" preload="none" loop>
-  <source src="music/favorite.wav" type="audio/wav">
-</audio>
+<audio id="bgMusic" preload="none" loop></audio>
 
 <!-- CARD -->
 <div class="relative w-full max-w-lg rounded-3xl p-6 sm:p-8
@@ -124,48 +118,58 @@ const nextBtn = document.getElementById("nextMusic");
 
 let isPlaying = false;
 let trackIndex = 0;
-const tracks = ["music/favorite.wav"]; // bisa tambahin lebih banyak lagu
-music.volume = 0.5;
+let playlist = [];
 
+// Fetch playlist JSON
+fetch("playlist.json")
+  .then(res => res.json())
+  .then(data => {
+    playlist = data;
+    loadTrack(trackIndex);
+  })
+  .catch(err => console.error("Gagal load playlist:", err));
+
+// Load a track
 function loadTrack(i){
-  music.src = tracks[i];
+  if(!playlist[i]) return;
+  music.src = playlist[i].src;
   music.load();
   if(isPlaying) music.play();
-  statusText.textContent = `🎵 Music: Playing Track ${i+1}`;
+  statusText.textContent = `🎵 ${isPlaying ? 'Playing' : 'Paused'}: ${playlist[i].title}`;
 }
 
+// Music button events
 btn.addEventListener("click", async () => {
-  try {
-    if (!isPlaying) {
+  try{
+    if(!isPlaying){
       await music.play();
-      icon.classList.replace("fa-play", "fa-pause");
-      statusText.textContent = `🎵 Music: Playing Track ${trackIndex+1}`;
-      isPlaying = true;
+      icon.classList.replace("fa-play","fa-pause");
+      statusText.textContent = `🎵 Playing: ${playlist[trackIndex].title}`;
+      isPlaying=true;
     } else {
       music.pause();
-      icon.classList.replace("fa-pause", "fa-play");
+      icon.classList.replace("fa-pause","fa-play");
       statusText.textContent = "🎵 Music: Paused";
-      isPlaying = false;
+      isPlaying=false;
     }
-  } catch(err){ console.error(err); statusText.textContent="⚠️ Audio gagal diputar"; }
+  }catch(err){ console.error(err); statusText.textContent="⚠️ Audio gagal diputar"; }
 });
 
-nextBtn.addEventListener("click", ()=>{ trackIndex=(trackIndex+1)%tracks.length; loadTrack(trackIndex); });
-prevBtn.addEventListener("click", ()=>{ trackIndex=(trackIndex-1+tracks.length)%tracks.length; loadTrack(trackIndex); });
+nextBtn.addEventListener("click",()=>{ trackIndex=(trackIndex+1)%playlist.length; loadTrack(trackIndex); });
+prevBtn.addEventListener("click",()=>{ trackIndex=(trackIndex-1+playlist.length)%playlist.length; loadTrack(trackIndex); });
 
-// Particle effect
+// Particle background
 const particles = document.getElementById("particles");
 for(let i=0;i<80;i++){
-  const div = document.createElement("div");
+  const div=document.createElement("div");
   div.classList.add("particle");
-  const size = Math.random()*3+2;
-  div.style.width=size+"px";
-  div.style.height=size+"px";
-  div.style.top=Math.random()*100+"%";
-  div.style.left=Math.random()*100+"%";
+  const size=Math.random()*3+2;
+  div.style.width=size+"px"; div.style.height=size+"px";
+  div.style.top=Math.random()*100+"%"; div.style.left=Math.random()*100+"%";
   div.style.animation=`spinSlow ${Math.random()*50+20}s linear infinite`;
   particles.appendChild(div);
 }
 </script>
+
 </body>
 </html>
