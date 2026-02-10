@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Linktree - Yuuzaann</title>
+<title>Linktree Pro - Yuuzaann</title>
 
 <!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Font -->
+<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <!-- Font Awesome -->
@@ -20,23 +20,16 @@ tailwind.config = {
     extend: {
       fontFamily: { poppins: ['Poppins', 'sans-serif'] },
       animation: {
-        gradient: "gradient 12s ease infinite",
+        gradient: "gradient 15s ease infinite",
         float: "float 4s ease-in-out infinite",
-        glow: "glow 2s ease-in-out infinite alternate"
+        glow: "glow 2s ease-in-out infinite alternate",
+        spinSlow: "spin 50s linear infinite"
       },
       keyframes: {
-        gradient: {
-          "0%,100%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" }
-        },
-        float: {
-          "0%,100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-6px)" }
-        },
-        glow: {
-          "0%": { boxShadow: "0 0 12px rgba(99,102,241,.35)" },
-          "100%": { boxShadow: "0 0 22px rgba(99,102,241,.7)" }
-        }
+        gradient: { "0%,100%": {backgroundPosition:"0% 50%"}, "50%": {backgroundPosition:"100% 50%"} },
+        float: { "0%,100%": {transform:"translateY(0px)"}, "50%": {transform:"translateY(-5px)"} },
+        glow: { "0%": {boxShadow:"0 0 10px rgba(99,102,241,.35)"}, "100%": {boxShadow:"0 0 22px rgba(99,102,241,.7)"} },
+        spinSlow: { "0%": {transform:"rotate(0deg)"}, "100%": {transform:"rotate(360deg)"} }
       }
     }
   }
@@ -44,12 +37,21 @@ tailwind.config = {
 </script>
 
 <style>
-body { background-size: 300% 300%; }
+body { background-size: 300% 300%; transition: background 0.5s ease; overflow-x:hidden; }
+.particle {
+  position:absolute;
+  border-radius:50%;
+  background:rgba(255,255,255,0.3);
+  pointer-events:none;
+}
 </style>
 </head>
 
 <body class="min-h-screen flex items-center justify-center font-poppins text-white
 bg-gradient-to-br from-indigo-950 via-slate-900 to-black animate-gradient px-4 py-10">
+
+<!-- Particle Background -->
+<div id="particles" class="absolute inset-0 -z-20 overflow-hidden"></div>
 
 <!-- AUDIO -->
 <audio id="bgMusic" preload="none" loop>
@@ -58,77 +60,57 @@ bg-gradient-to-br from-indigo-950 via-slate-900 to-black animate-gradient px-4 p
 
 <!-- CARD -->
 <div class="relative w-full max-w-lg rounded-3xl p-6 sm:p-8
-bg-white/10 backdrop-blur-xl border border-white/15 shadow-2xl text-center">
+bg-white/10 backdrop-blur-2xl border border-white/15 shadow-2xl text-center hover:scale-[1.01] transition-transform duration-300">
 
-  <!-- Glow -->
   <div class="absolute -inset-1 rounded-3xl bg-indigo-500/20 blur-2xl -z-10"></div>
 
-  <!-- MUSIC TOGGLE -->
-  <button id="musicBtn"
-    class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10
-    hover:bg-indigo-500/30 transition animate-glow flex items-center justify-center">
-    <i id="musicIcon" class="fa-solid fa-play text-sm"></i>
-  </button>
+  <!-- MUSIC CONTROLS -->
+  <div class="absolute top-4 right-4 flex gap-2 items-center">
+    <button id="prevMusic" class="w-8 h-8 rounded-full bg-white/10 hover:bg-indigo-500/30 flex items-center justify-center transition"><i class="fa-solid fa-backward text-xs"></i></button>
+    <button id="musicBtn" class="w-10 h-10 rounded-full bg-white/10 hover:bg-indigo-500/30 flex items-center justify-center transition">
+      <i id="musicIcon" class="fa-solid fa-play text-sm"></i>
+    </button>
+    <button id="nextMusic" class="w-8 h-8 rounded-full bg-white/10 hover:bg-indigo-500/30 flex items-center justify-center transition"><i class="fa-solid fa-forward text-xs"></i></button>
+  </div>
 
   <!-- AVATAR -->
-  <div class="flex justify-center">
-    <img src="img/foto.jpeg"
-      class="w-24 h-24 rounded-full object-cover
-      border-4 border-white/20 shadow-lg animate-float">
+  <div class="flex justify-center mt-1">
+    <img src="img/foto.jpeg" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-white/20 shadow-lg animate-float hover:scale-105 transition-transform duration-300">
   </div>
 
   <!-- NAME -->
-  <h1 class="mt-4 text-xl font-semibold tracking-wide">Yuuzaann</h1>
+  <h1 class="mt-4 text-xl sm:text-2xl font-semibold tracking-wide">Yuuzaann</h1>
 
   <!-- BIO -->
-  <p class="mt-2 text-sm text-gray-300 leading-relaxed max-w-md mx-auto">
-    Siswa RPL, gamer, dan penikmat komik.  
-    Eksplor teknologi & dunia coding 🚀
+  <p class="mt-2 text-sm sm:text-[15px] text-gray-300 leading-relaxed max-w-md mx-auto">
+    Siswa RPL, gamer & penikmat komik. Eksplor teknologi & coding 🚀
   </p>
 
   <!-- SOSMED -->
-  <div class="flex justify-center gap-4 mt-6 text-lg">
-    <a href="https://x.com/Yuuzaan_" target="_blank" class="hover:text-sky-400">
-      <i class="fa-brands fa-x-twitter"></i>
-    </a>
-    <a href="https://www.instagram.com/sadutzz_" target="_blank" class="hover:text-pink-400">
-      <i class="fa-brands fa-instagram"></i>
-    </a>
-    <a href="https://vm.tiktok.com/ZS9JAY62Adbyg-EKDyK/" target="_blank">
-      <i class="fa-brands fa-tiktok"></i>
-    </a>
-    <a href="https://github.com/Yuuzaann" target="_blank" class="hover:text-gray-300">
-      <i class="fa-brands fa-github"></i>
-    </a>
+  <div class="flex justify-center gap-5 mt-6 text-xl">
+    <a href="https://x.com/Yuuzaan_" target="_blank" class="hover:text-sky-400 hover:scale-110"><i class="fa-brands fa-x-twitter"></i></a>
+    <a href="https://www.instagram.com/sadutzz_" target="_blank" class="hover:text-pink-400 hover:scale-110"><i class="fa-brands fa-instagram"></i></a>
+    <a href="https://vm.tiktok.com/ZS9JAY62Adbyg-EKDyK/" target="_blank" class="hover:text-white hover:scale-110"><i class="fa-brands fa-tiktok"></i></a>
+    <a href="https://github.com/Yuuzaann" target="_blank" class="hover:text-gray-300 hover:scale-110"><i class="fa-brands fa-github"></i></a>
   </div>
 
-  <!-- DIVIDER -->
   <div class="my-6 h-px bg-white/10"></div>
 
   <!-- LINKS -->
   <div class="space-y-4">
     <a href="https://yuuzaann.github.io/Arya-Portofolio/" target="_blank"
       class="block w-full py-3 rounded-xl bg-white/10 border border-white/10
-      hover:bg-indigo-500/25 transition">
+      hover:bg-indigo-500/25 hover:scale-[1.02] transition-transform duration-300 font-medium">
       🌐 My Portfolio
     </a>
-
     <a href="https://discord.gg/N469ZNNSzS" target="_blank"
-      class="block w-full py-3 rounded-xl font-semibold
-      bg-indigo-600 hover:bg-indigo-500 transition shadow-lg">
+      class="block w-full py-3 rounded-xl font-semibold bg-indigo-600 hover:bg-indigo-500 hover:scale-[1.02] transition-transform duration-300 shadow-lg">
       💬 Join My Discord
     </a>
   </div>
 
-  <!-- STATUS -->
-  <p id="musicStatus" class="mt-6 text-xs text-gray-400">
-    🎵 Music: Paused
-  </p>
-
-  <!-- FOOTER -->
-  <p class="mt-1 text-[11px] text-gray-500">
-    © 2026 Yuuzaann • All rights reserved
-  </p>
+  <p id="musicStatus" class="mt-6 text-xs text-gray-400">🎵 Music: Paused</p>
+  <p class="mt-1 text-[11px] text-gray-500">© 2026 Yuuzaann • All rights reserved</p>
 </div>
 
 <!-- SCRIPT -->
@@ -137,16 +119,27 @@ const music = document.getElementById("bgMusic");
 const btn = document.getElementById("musicBtn");
 const icon = document.getElementById("musicIcon");
 const statusText = document.getElementById("musicStatus");
+const prevBtn = document.getElementById("prevMusic");
+const nextBtn = document.getElementById("nextMusic");
 
 let isPlaying = false;
+let trackIndex = 0;
+const tracks = ["music/favorite.wav"]; // bisa tambahin lebih banyak lagu
 music.volume = 0.5;
+
+function loadTrack(i){
+  music.src = tracks[i];
+  music.load();
+  if(isPlaying) music.play();
+  statusText.textContent = `🎵 Music: Playing Track ${i+1}`;
+}
 
 btn.addEventListener("click", async () => {
   try {
     if (!isPlaying) {
       await music.play();
       icon.classList.replace("fa-play", "fa-pause");
-      statusText.textContent = "🎵 Music: Playing";
+      statusText.textContent = `🎵 Music: Playing Track ${trackIndex+1}`;
       isPlaying = true;
     } else {
       music.pause();
@@ -154,12 +147,25 @@ btn.addEventListener("click", async () => {
       statusText.textContent = "🎵 Music: Paused";
       isPlaying = false;
     }
-  } catch (err) {
-    console.error("Audio error:", err);
-    statusText.textContent = "⚠️ Audio gagal diputar";
-  }
+  } catch(err){ console.error(err); statusText.textContent="⚠️ Audio gagal diputar"; }
 });
-</script>
 
+nextBtn.addEventListener("click", ()=>{ trackIndex=(trackIndex+1)%tracks.length; loadTrack(trackIndex); });
+prevBtn.addEventListener("click", ()=>{ trackIndex=(trackIndex-1+tracks.length)%tracks.length; loadTrack(trackIndex); });
+
+// Particle effect
+const particles = document.getElementById("particles");
+for(let i=0;i<80;i++){
+  const div = document.createElement("div");
+  div.classList.add("particle");
+  const size = Math.random()*3+2;
+  div.style.width=size+"px";
+  div.style.height=size+"px";
+  div.style.top=Math.random()*100+"%";
+  div.style.left=Math.random()*100+"%";
+  div.style.animation=`spinSlow ${Math.random()*50+20}s linear infinite`;
+  particles.appendChild(div);
+}
+</script>
 </body>
 </html>
