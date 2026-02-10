@@ -51,68 +51,65 @@ body { background-size: 300% 300%; }
 <body class="min-h-screen flex items-center justify-center font-poppins text-white
 bg-gradient-to-br from-indigo-950 via-slate-900 to-black animate-gradient px-4 py-10">
 
-<!-- Audio -->
-<audio id="bgMusic" loop>
-  <source src="music/favorite.wav">
+<!-- AUDIO -->
+<audio id="bgMusic" preload="none" loop>
+  <source src="music/favorit.wav" type="audio/wav">
 </audio>
 
-<!-- Card -->
+<!-- CARD -->
 <div class="relative w-full max-w-lg rounded-3xl p-6 sm:p-8
 bg-white/10 backdrop-blur-xl border border-white/15 shadow-2xl text-center">
 
-  <!-- Soft Glow -->
+  <!-- Glow -->
   <div class="absolute -inset-1 rounded-3xl bg-indigo-500/20 blur-2xl -z-10"></div>
 
-  <!-- Music Toggle -->
-  <button onclick="toggleMusic()" 
-    class="absolute top-4 right-4 sm:top-5 sm:right-5
-    w-10 h-10 rounded-full bg-white/10
+  <!-- MUSIC TOGGLE -->
+  <button id="musicBtn"
+    class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10
     hover:bg-indigo-500/30 transition animate-glow flex items-center justify-center">
     <i id="musicIcon" class="fa-solid fa-play text-sm"></i>
   </button>
 
-  <!-- Avatar -->
+  <!-- AVATAR -->
   <div class="flex justify-center">
     <img src="img/foto.jpeg"
-      class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover
+      class="w-24 h-24 rounded-full object-cover
       border-4 border-white/20 shadow-lg animate-float">
   </div>
 
-  <!-- Name -->
-  <h1 class="mt-4 text-xl sm:text-2xl font-semibold tracking-wide">
-    Yuuzaann
-  </h1>
+  <!-- NAME -->
+  <h1 class="mt-4 text-xl font-semibold tracking-wide">Yuuzaann</h1>
 
-  <!-- Bio -->
-  <p class="mt-2 text-sm sm:text-[15px] text-gray-300 leading-relaxed max-w-md mx-auto">
+  <!-- BIO -->
+  <p class="mt-2 text-sm text-gray-300 leading-relaxed max-w-md mx-auto">
     Siswa RPL, gamer, dan penikmat komik.  
-    Tertarik pada dunia teknologi, coding, dan eksplorasi digital 🚀
+    Eksplor teknologi & dunia coding 🚀
   </p>
 
-  <!-- Sosmed -->
+  <!-- SOSMED -->
   <div class="flex justify-center gap-4 mt-6 text-lg">
-    <a href="https://x.com/Yuuzaan_" target="_blank" class="hover:text-sky-400 transition">
+    <a href="https://x.com/Yuuzaan_" target="_blank" class="hover:text-sky-400">
       <i class="fa-brands fa-x-twitter"></i>
     </a>
-    <a href="https://www.instagram.com/sadutzz_" target="_blank" class="hover:text-pink-400 transition">
+    <a href="https://www.instagram.com/sadutzz_" target="_blank" class="hover:text-pink-400">
       <i class="fa-brands fa-instagram"></i>
     </a>
-    <a href="https://vm.tiktok.com/ZS9JAY62Adbyg-EKDyK/" target="_blank" class="hover:text-white transition">
+    <a href="https://vm.tiktok.com/ZS9JAY62Adbyg-EKDyK/" target="_blank">
       <i class="fa-brands fa-tiktok"></i>
     </a>
-    <a href="https://github.com/Yuuzaann" target="_blank" class="hover:text-gray-300 transition">
+    <a href="https://github.com/Yuuzaann" target="_blank" class="hover:text-gray-300">
       <i class="fa-brands fa-github"></i>
     </a>
   </div>
 
-  <!-- Divider -->
+  <!-- DIVIDER -->
   <div class="my-6 h-px bg-white/10"></div>
 
-  <!-- Links -->
+  <!-- LINKS -->
   <div class="space-y-4">
     <a href="https://yuuzaann.github.io/Arya-Portofolio/" target="_blank"
       class="block w-full py-3 rounded-xl bg-white/10 border border-white/10
-      hover:bg-indigo-500/25 transition font-medium">
+      hover:bg-indigo-500/25 transition">
       🌐 My Portfolio
     </a>
 
@@ -123,36 +120,45 @@ bg-white/10 backdrop-blur-xl border border-white/15 shadow-2xl text-center">
     </a>
   </div>
 
-  <!-- Footer -->
+  <!-- STATUS -->
   <p id="musicStatus" class="mt-6 text-xs text-gray-400">
     🎵 Music: Paused
   </p>
 
+  <!-- FOOTER -->
   <p class="mt-1 text-[11px] text-gray-500">
     © 2026 Yuuzaann • All rights reserved
   </p>
 </div>
 
+<!-- SCRIPT -->
 <script>
 const music = document.getElementById("bgMusic");
+const btn = document.getElementById("musicBtn");
 const icon = document.getElementById("musicIcon");
 const statusText = document.getElementById("musicStatus");
-let isPlaying = false;
 
+let isPlaying = false;
 music.volume = 0.5;
 
-function toggleMusic() {
-  if (!isPlaying) {
-    music.play();
-    icon.classList.replace("fa-play", "fa-pause");
-    statusText.innerText = "🎵 Music: Playing";
-  } else {
-    music.pause();
-    icon.classList.replace("fa-pause", "fa-play");
-    statusText.innerText = "🎵 Music: Paused";
+btn.addEventListener("click", async () => {
+  try {
+    if (!isPlaying) {
+      await music.play();
+      icon.classList.replace("fa-play", "fa-pause");
+      statusText.textContent = "🎵 Music: Playing";
+      isPlaying = true;
+    } else {
+      music.pause();
+      icon.classList.replace("fa-pause", "fa-play");
+      statusText.textContent = "🎵 Music: Paused";
+      isPlaying = false;
+    }
+  } catch (err) {
+    console.error("Audio error:", err);
+    statusText.textContent = "⚠️ Audio gagal diputar";
   }
-  isPlaying = !isPlaying;
-}
+});
 </script>
 
 </body>
