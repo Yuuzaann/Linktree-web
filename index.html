@@ -82,35 +82,53 @@ bg-white/10 backdrop-blur-2xl border border-white/15 shadow-2xl text-center hove
   </p>
 
   <!-- SOSMED -->
-  <div class="flex justify-center gap-5 mt-6 text-xl">
-    <a href="https://x.com/Yuuzaan_" target="_blank" class="hover:text-sky-400 hover:scale-110"><i class="fa-brands fa-x-twitter"></i></a>
-    <a href="https://www.instagram.com/sadutzz_" target="_blank" class="hover:text-pink-400 hover:scale-110"><i class="fa-brands fa-instagram"></i></a>
-    <a href="https://vm.tiktok.com/ZS9JAY62Adbyg-EKDyK/" target="_blank" class="hover:text-white hover:scale-110"><i class="fa-brands fa-tiktok"></i></a>
-    <a href="https://github.com/Yuuzaann" target="_blank" class="hover:text-gray-300 hover:scale-110"><i class="fa-brands fa-github"></i></a>
-  </div>
+  <div class="flex justify-center gap-5 mt-6 text-xl" id="socials"></div>
 
   <div class="my-6 h-px bg-white/10"></div>
 
   <!-- LINKS -->
-  <div class="space-y-4">
-    <a href="https://yuuzaann.github.io/Arya-Portofolio/" target="_blank"
-      class="block w-full py-3 rounded-xl bg-white/10 border border-white/10
-      hover:bg-indigo-500/25 hover:scale-[1.02] transition-transform duration-300 font-medium">
-      🌐 My Portfolio
-    </a>
-    <a href="https://discord.gg/N469ZNNSzS" target="_blank"
-      class="block w-full py-3 rounded-xl font-semibold bg-indigo-600 hover:bg-indigo-500 hover:scale-[1.02] transition-transform duration-300 shadow-lg">
-      💬 Join My Discord
-    </a>
-  </div>
+  <div class="space-y-4" id="linksContainer"></div>
 
   <p id="musicStatus" class="mt-6 text-xs text-gray-400">🎵 Music: Paused</p>
   <p class="mt-1 text-[11px] text-gray-500">© 2026 Yuuzaann • All rights reserved</p>
 </div>
 
-<!-- SCRIPT -->
 <script>
-// Elements
+// --- Social Media Links ---
+const socialsData = [
+  { href: "https://x.com/Yuuzaan_", icon: "fa-brands fa-x-twitter", color: "hover:text-sky-400" },
+  { href: "https://www.instagram.com/sadutzz_", icon: "fa-brands fa-instagram", color: "hover:text-pink-400" },
+  { href: "https://vm.tiktok.com/ZS9JAY62Adbyg-EKDyK/", icon: "fa-brands fa-tiktok", color: "hover:text-white" },
+  { href: "https://github.com/Yuuzaann", icon: "fa-brands fa-github", color: "hover:text-gray-300" }
+];
+
+const socialsContainer = document.getElementById("socials");
+socialsData.forEach(s => {
+  const a = document.createElement("a");
+  a.href = s.href;
+  a.target = "_blank";
+  a.className = `${s.color} hover:scale-110 transition`;
+  a.innerHTML = `<i class="${s.icon}"></i>`;
+  socialsContainer.appendChild(a);
+});
+
+// --- Links Section ---
+const linksData = [
+  { href: "https://yuuzaann.github.io/Arya-Portofolio/", icon: "fa-solid fa-briefcase", text: "My Portfolio", style: "bg-white/10 border border-white/10 hover:bg-indigo-500/25" },
+  { href: "https://discord.gg/N469ZNNSzS", icon: "fa-brands fa-discord", text: "Join My Discord", style: "bg-indigo-600 hover:bg-indigo-500 shadow-lg" }
+];
+
+const linksContainer = document.getElementById("linksContainer");
+linksData.forEach(l => {
+  const a = document.createElement("a");
+  a.href = l.href;
+  a.target = "_blank";
+  a.className = `flex items-center justify-center gap-2 block w-full py-3 rounded-xl font-medium ${l.style} hover:scale-[1.02] transition-transform duration-300`;
+  a.innerHTML = `<i class="${l.icon}"></i> ${l.text}`;
+  linksContainer.appendChild(a);
+});
+
+// --- Music Player ---
 const music = document.getElementById("bgMusic");
 const btn = document.getElementById("musicBtn");
 const icon = document.getElementById("musicIcon");
@@ -125,73 +143,36 @@ let playlist = [];
 // Fetch playlist
 fetch("playlist.json")
   .then(res => res.json())
-  .then(data => {
-    playlist = data;
-    loadTrack(trackIndex, false);
-  })
+  .then(data => { playlist = data; loadTrack(trackIndex, false); })
   .catch(err => console.error("Gagal load playlist:", err));
 
-// Load track
 function loadTrack(i, autoplay=true){
   if(!playlist[i]) return;
   music.src = playlist[i].src;
   music.load();
   updateStatus();
   if(autoplay){
-    music.play().then(()=>{
-      isPlaying = true;
-      icon.classList.replace("fa-play","fa-pause");
-      updateStatus();
-    }).catch(err=>{
-      console.warn("Autoplay diblokir:", err);
-    });
+    music.play().then(()=>{ isPlaying = true; icon.classList.replace("fa-play","fa-pause"); updateStatus(); }).catch(err=>{console.warn("Autoplay diblokir:", err); });
   }
 }
 
-// Update status
 function updateStatus(){
-  if(playlist[trackIndex]){
-    statusText.textContent = `🎵 ${isPlaying ? 'Playing' : 'Paused'}: ${playlist[trackIndex].title}`;
-  }
+  if(playlist[trackIndex]) statusText.textContent = `🎵 ${isPlaying ? 'Playing' : 'Paused'}: ${playlist[trackIndex].title}`;
 }
 
-// Music button
 btn.addEventListener("click", async ()=>{
   try{
-    if(!isPlaying){
-      await music.play();
-      icon.classList.replace("fa-play","fa-pause");
-      isPlaying=true;
-    } else {
-      music.pause();
-      icon.classList.replace("fa-pause","fa-play");
-      isPlaying=false;
-    }
+    if(!isPlaying){ await music.play(); icon.classList.replace("fa-play","fa-pause"); isPlaying=true; }
+    else { music.pause(); icon.classList.replace("fa-pause","fa-play"); isPlaying=false; }
     updateStatus();
-  }catch(err){
-    console.error(err);
-    statusText.textContent="⚠️ Audio gagal diputar";
-  }
+  }catch(err){ console.error(err); statusText.textContent="⚠️ Audio gagal diputar"; }
 });
 
-// Prev / Next
-prevBtn.addEventListener("click", ()=>{
-  trackIndex = (trackIndex - 1 + playlist.length) % playlist.length;
-  loadTrack(trackIndex, true);
-});
+prevBtn.addEventListener("click", ()=>{ trackIndex=(trackIndex-1+playlist.length)%playlist.length; loadTrack(trackIndex,true); });
+nextBtn.addEventListener("click", ()=>{ trackIndex=(trackIndex+1)%playlist.length; loadTrack(trackIndex,true); });
+music.addEventListener("ended", ()=>{ trackIndex=(trackIndex+1)%playlist.length; loadTrack(trackIndex,true); });
 
-nextBtn.addEventListener("click", ()=>{
-  trackIndex = (trackIndex + 1) % playlist.length;
-  loadTrack(trackIndex, true);
-});
-
-// Auto next track
-music.addEventListener("ended", ()=>{
-  trackIndex = (trackIndex + 1) % playlist.length;
-  loadTrack(trackIndex, true);
-});
-
-// Particle background
+// --- Particle Background ---
 const particles = document.getElementById("particles");
 for(let i=0;i<80;i++){
   const div=document.createElement("div");
