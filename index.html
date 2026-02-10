@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Linktree Pro - Yuuzaann</title>
+<title>Linktree - Yuuzaann</title>
 
-<!-- Tailwind CSS -->
+<!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
 
 <!-- Google Fonts -->
@@ -39,7 +39,11 @@ tailwind.config = {
 <style>
 body { background-size: 300% 300%; transition: background 0.5s ease; overflow-x:hidden; }
 .particle { position:absolute; border-radius:50%; background:rgba(255,255,255,0.3); pointer-events:none; }
-a, button { transition: all 0.3s ease; }
+a, button, input { transition: all 0.3s ease; }
+input[type=range]::-webkit-slider-thumb {
+  background: #6366f1; border-radius:50%; cursor:pointer;
+}
+input[type=range]::-moz-range-thumb { background:#6366f1; border-radius:50%; cursor:pointer; }
 </style>
 </head>
 
@@ -50,7 +54,7 @@ bg-gradient-to-br from-indigo-950 via-slate-900 to-black animate-gradient px-4 p
 <div id="particles" class="absolute inset-0 -z-20 overflow-hidden"></div>
 
 <!-- AUDIO -->
-<audio id="bgMusic" preload="none" loop></audio>
+<audio id="bgMusic" preload="none"></audio>
 
 <!-- CARD -->
 <div class="relative w-full max-w-lg rounded-3xl p-6 sm:p-8
@@ -103,24 +107,39 @@ bg-white/10 backdrop-blur-2xl border border-white/15 shadow-2xl text-center hove
     </a>
   </div>
 
-  <p id="musicStatus" class="mt-6 text-xs text-gray-400">🎵 Music: Paused</p>
+  <!-- PROGRESS + VOLUME -->
+  <div class="mt-6 flex flex-col gap-2">
+    <input type="range" id="progressBar" value="0" min="0" max="100" class="w-full h-1 bg-white/20 rounded-lg">
+    <div class="flex justify-between items-center">
+      <span id="currentTime" class="text-xs text-gray-400">0:00</span>
+      <input type="range" id="volumeSlider" value="50" min="0" max="100" class="w-24 h-1 bg-white/20 rounded-lg">
+      <span id="duration" class="text-xs text-gray-400">0:00</span>
+    </div>
+  </div>
+
+  <p id="musicStatus" class="mt-2 text-xs text-gray-400">🎵 Music: Paused</p>
   <p class="mt-1 text-[11px] text-gray-500">© 2026 Yuuzaann • All rights reserved</p>
 </div>
 
 <!-- SCRIPT -->
 <script>
+// Elements
 const music = document.getElementById("bgMusic");
 const btn = document.getElementById("musicBtn");
 const icon = document.getElementById("musicIcon");
 const statusText = document.getElementById("musicStatus");
 const prevBtn = document.getElementById("prevMusic");
 const nextBtn = document.getElementById("nextMusic");
+const progressBar = document.getElementById("progressBar");
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
+const volumeSlider = document.getElementById("volumeSlider");
 
 let isPlaying = false;
 let trackIndex = 0;
 let playlist = [];
 
-// Fetch playlist JSON
+// Fetch playlist
 fetch("playlist.json")
   .then(res => res.json())
   .then(data => {
@@ -129,7 +148,7 @@ fetch("playlist.json")
   })
   .catch(err => console.error("Gagal load playlist:", err));
 
-// Load a track
+// Load track
 function loadTrack(i){
   if(!playlist[i]) return;
   music.src = playlist[i].src;
@@ -155,8 +174,35 @@ btn.addEventListener("click", async () => {
   }catch(err){ console.error(err); statusText.textContent="⚠️ Audio gagal diputar"; }
 });
 
-nextBtn.addEventListener("click",()=>{ trackIndex=(trackIndex+1)%playlist.length; loadTrack(trackIndex); });
-prevBtn.addEventListener("click",()=>{ trackIndex=(trackIndex-1+playlist.length)%playlist.length; loadTrack(trackIndex); });
+// Prev / Next
+prevBtn.addEventListener("click", ()=>{ trackIndex=(trackIndex-1+playlist.length)%playlist.length; loadTrack(trackIndex); });
+nextBtn.addEventListener("click", ()=>{ trackIndex=(trackIndex+1)%playlist.length; loadTrack(trackIndex); });
+
+// Auto next track when ended
+music.addEventListener("ended", ()=>{ trackIndex=(trackIndex+1)%playlist.length; loadTrack(trackIndex); });
+
+// Progress bar
+music.addEventListener("timeupdate", ()=>{
+  progressBar.value = (music.currentTime/music.duration)*100 || 0;
+  currentTimeEl.textContent = formatTime(music.currentTime);
+  durationEl.textContent = formatTime(music.duration);
+});
+
+progressBar.addEventListener("input", ()=>{
+  music.currentTime = (progressBar.value/100)*music.duration;
+});
+
+// Volume
+volumeSlider.addEventListener("input", ()=>{
+  music.volume = volumeSlider.value/100;
+});
+
+// Format time
+function formatTime(sec){
+  const m = Math.floor(sec/60)||0;
+  const s = Math.floor(sec%60)||0;
+  return `${m}:${s<10?'0'+s:s}`;
+}
 
 // Particle background
 const particles = document.getElementById("particles");
@@ -170,6 +216,5 @@ for(let i=0;i<80;i++){
   particles.appendChild(div);
 }
 </script>
-
 </body>
 </html>
