@@ -1,5 +1,5 @@
 [
-  { "title": "Favorite Song 1", "src": "music/favorite.wav" },
-  { "title": "Favorite Song 2", "src": "music/hadaka-no-yuusha.mp3" },
-  { "title": "Favorite Song 3", "src": "music/merry-go-round.mp3" }
+  { "title": "Betelgeuse - Yuuri", "src": "music/favorite.wav" },
+  { "title": "Hadaka no Yuusha - Vaundy", "src": "music/hadaka-no-yuusha.mp3" },
+  { "title": "Merry go Round - Yuuri", "src": "music/merry-go-round.mp3" }
 ]
